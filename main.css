@@ -98,3 +98,10 @@ li a:hover {
   overflow: auto;
   background-color: rgba(0, 0, 0, 0.4);
 }
+/* table */
+.search-result {
+  display: none;
+  color: #111;
+  font-size: 12px;
+  height: 16px;
+}

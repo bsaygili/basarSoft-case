@@ -1,29 +1,59 @@
-const fs = require("fs/promises");
+const fs = require("fs");
 const express = require("express");
+const bodyparser = require("body-parser");
 const cors = require("cors");
 const PORT = process.env.PORT || 3001;
 
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(bodyparser.urlencoded({ extended: false }));
 
-app.get("/points", (req, res) => {
-  res.status(200).json({
-    id: "1",
-    location: "Ankara",
-    lat: "121325.12151",
-    long: "5465465.54556",
+app.post("/points/:id", (req, res) => {
+  var content = req.body;
+  var { id } = req.params;
+  // if (typeof id !== "number" || id != null) {
+  //   res.json({
+  //     success: false,
+  //     data: "id is not an object",
+  //   });
+  // }
+  if (!content) {
+    res.json({
+      success: false,
+      data: "There is no content ",
+    });
+  }
+  var { id, location, lat, long } = content;
+
+  var data = fs.readFileSync("db.json", "utf-8");
+  var points = JSON.parse(data);
+  console.log("data", data);
+  points.places.push({
+    id,
+    location,
+    lat,
+    long,
+  });
+
+  fs.writeFileSync("db.json", JSON.stringify(points), {
+    encoding: "utf-8",
+  });
+
+  res.status(200).send({
+    success: true,
+    data: points,
   });
 });
 
-app.post("/points/:id", async (req, res) => {
-  const { id } = req.params;
-  const { content } = req.body;
-
-  // if (!content) {
-  //   return res.sendStatus(400);
-  // }
-  await fs.writeFile("db.json", content);
-  res.status(201).json({ id });
+app.get("/points", (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  var data = fs.readFileSync("db.json", "utf-8");
+  var points = JSON.parse(data);
+  res.status(200).send({
+    success: true,
+    data: points,
+  });
 });
 
 app.listen(PORT, () =>

@@ -45,7 +45,7 @@ AddPoint = () => {
   _Draw.setActive(true);
 };
 
-// get add point modal elemnet AP=AddPoint
+// get add point modal element AP=AddPoint QP=QueryPoint
 var modalAP = document.querySelector("#addPointModal");
 var modalQP = document.querySelector("#queryPointModal");
 // get close button element
@@ -62,6 +62,42 @@ var latitudeInput = document.getElementById("lat-text");
 var longitudeInput = document.getElementById("long-text");
 //get form element
 var form = document.getElementById("form");
+// get search-input element
+const input = document.getElementById("search-text");
+//get table element
+const table = document.querySelector("#table_data");
+
+// Query Point function for loadIntoTable
+async function loadIntoTable(url, table) {
+  const tableHead = table.querySelector("thead");
+  const tableBody = table.querySelector("tbody");
+  const response = await fetch(url);
+  const { data } = await response.json();
+  console.log(Object.keys(data.places[5]).length);
+
+  // clear table
+  tableHead.innerHTML = `
+  <tr>
+    <th scope="col">#</th>
+    <th scope="col">Name</th>
+    <th scope="col">Latitude</th>
+    <th scope="col">Longitude</th>
+</tr>`;
+  tableBody.innerHTML = `<tr></tr>`;
+  // populate the rows
+  for (let i = 0; i < data.places.length; i++) {
+    const rowElement = document.createElement("tr");
+    console.log(`test ${i}`, Object.keys(data.places[i]).length);
+    for (let k = 0; k < Object.keys(data.places[i]).length; k++) {
+      const cellElement = document.createElement("td");
+      cellElement.textContent = "Bahadır";
+      rowElement.appendChild(cellElement);
+    }
+    tableBody.appendChild(rowElement);
+  }
+}
+
+loadIntoTable("http://localhost:3001/points", document.querySelector("table"));
 
 //listen for submit
 form.addEventListener("submit", (event) => {
@@ -141,16 +177,31 @@ queryPointLink.addEventListener("click", () => {
 // request api
 const api_url = "http://localhost:3001";
 const fetchData = () => {
-  fetch(`${api_url}/points`, {
-    mode: "no-cors",
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-      "Content-type": "application/json",
-    },
-  })
-    .then((res) => console.log("res", res.json()))
+  fetch(`${api_url}/points`)
+    .then((res) => res.json())
     .then((data) => console.log("data", data))
     .catch((err) => console.log("err", err));
 };
 saveBtn.addEventListener("click", fetchData);
+
+function searchTable() {
+  var filter, found, table, tr, td, i, j;
+  filter = input.value.toUpperCase();
+  table = document.getElementById("table_data");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td");
+    for (j = 0; j < td.length; j++) {
+      if (td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
+        found = true;
+      }
+    }
+    if (found) {
+      tr[i].style.display = "";
+      found = false;
+    } else {
+      tr[i].style.display = "none";
+    }
+  }
+}
+input.addEventListener("keyup", searchTable);

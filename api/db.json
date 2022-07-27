@@ -1,20 +1,12 @@
-[
-  {
-    "id": "1",
-    "location": "Ankara",
-    "lat": "121325.12151",
-    "long": "5465465.54556"
-  },
-  {
-    "id": "2",
-    "location": "Yozgat",
-    "lat": "5484.84512",
-    "long": "541532.547"
-  },
-  {
-    "id": "3",
-    "location": "Kırşehir",
-    "lat": "45454.5646",
-    "long": "54654.777989"
-  }
-]
+{
+  "places": [
+    { "id": 1, "location": "Ankara", "lat": 15151.78879, "long": 6959.5454 },
+    { "id": 2, "location": "Bursa", "lat": 15151.74556, "long": 74556.5454 },
+    { "id": 3, "location": "Yozgat", "lat": 15151.74556, "long": 74556.5454 },
+    { "id": 4, "location": "Bingöl", "lat": 15151.74556, "long": 74556.5454 },
+    { "id": 5, "location": "Kırşehir", "lat": 15151.74556, "long": 74556.5454 },
+    { "id": 6, "location": "Kırıkale", "lat": 15151.74556, "long": 74556.5454 }
+  ],
+  "createdAt": "2022-07-27T12:13:21.697Z",
+  "lastModified": "2022-07-27T12:13:21.697Z"
+}
