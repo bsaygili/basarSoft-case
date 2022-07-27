@@ -51,9 +51,9 @@ li a:hover {
 }
 .modal-point-content {
   background-color: #f4f4f4;
-  margin: 20% auto;
+  margin: 5% auto;
   padding: 20px;
-  width: 60%;
+  width: 50%;
   box-shadow: 0 5px 8px rgba(0, 0, 0, 0.3), 0 7px 20px rgba(0, 0, 0, 0.3);
   animation-name: modalopen;
   animation-duration: 0.6s;

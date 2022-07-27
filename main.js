@@ -45,15 +45,19 @@ AddPoint = () => {
   _Draw.setActive(true);
 };
 
+// api url
+const api_url = "http://localhost:3001/points";
+
 // get add point modal element AP=AddPoint QP=QueryPoint
 var modalAP = document.querySelector("#addPointModal");
 var modalQP = document.querySelector("#queryPointModal");
 // get close button element
 var closeBtn = document.querySelector("#closeButton");
 var closeBtnQuery = document.querySelector("#closeButtonQuery");
-//get save and leave button
-var saveBtn = document.querySelector("#saveButton");
+// query point link
 var queryPointLink = document.querySelector("#queryPoint");
+// get ID input
+var idInput = document.getElementById("id-text");
 // get location input
 var locationInput = document.getElementById("location-name");
 // get latitude input
@@ -62,50 +66,39 @@ var latitudeInput = document.getElementById("lat-text");
 var longitudeInput = document.getElementById("long-text");
 //get form element
 var form = document.getElementById("form");
-// get search-input element
-const input = document.getElementById("search-text");
-//get table element
-const table = document.querySelector("#table_data");
-
-// Query Point function for loadIntoTable
-async function loadIntoTable(url, table) {
-  const tableHead = table.querySelector("thead");
-  const tableBody = table.querySelector("tbody");
-  const response = await fetch(url);
-  const { data } = await response.json();
-  console.log(Object.keys(data.places[5]).length);
-
-  // clear table
-  tableHead.innerHTML = `
-  <tr>
-    <th scope="col">#</th>
-    <th scope="col">Name</th>
-    <th scope="col">Latitude</th>
-    <th scope="col">Longitude</th>
-</tr>`;
-  tableBody.innerHTML = `<tr></tr>`;
-  // populate the rows
-  for (let i = 0; i < data.places.length; i++) {
-    const rowElement = document.createElement("tr");
-    console.log(`test ${i}`, Object.keys(data.places[i]).length);
-    for (let k = 0; k < Object.keys(data.places[i]).length; k++) {
-      const cellElement = document.createElement("td");
-      cellElement.textContent = "Bahadır";
-      rowElement.appendChild(cellElement);
-    }
-    tableBody.appendChild(rowElement);
-  }
-}
-
-loadIntoTable("http://localhost:3001/points", document.querySelector("table"));
 
 //listen for submit
 form.addEventListener("submit", (event) => {
-  event.preventDefault();
   validetInputs();
   modalAP.style.display = "none";
-  locationInput.value = "";
+  // locationInput.value = "";
+  event.preventDefault();
 });
+//get save and leave button
+var saveBtn = document.querySelector("#saveButton");
+
+var place;
+function saveData(event) {
+  place = {
+    id: Number(idInput.value),
+    location: locationInput.value.trim(),
+    lat: Number(latitudeInput.value),
+    long: Number(longitudeInput.value),
+  };
+  event.preventDefault();
+  postData(place);
+}
+
+async function postData(place) {
+  const payload = JSON.stringify(place);
+  await fetch(`${api_url}/${place.id}`, {
+    method: "POST",
+    body: payload,
+  })
+    .then((res) => res.json())
+    .then((data) => console.log("data", data))
+    .catch((err) => console.log("err", err));
+}
 
 // set error messages
 const setError = (element, message) => {
@@ -126,10 +119,16 @@ const setSuccess = (element) => {
 
 // check inputs for validating
 const validetInputs = () => {
+  const placeId = idInput.value.trim();
   const locName = locationInput.value.trim();
   const latValue = latitudeInput.value.trim();
   const longValue = longitudeInput.value.trim();
 
+  if (placeId === "" && typeof placeId == "number") {
+    setError(idInput, "Location is required must be integer");
+  } else {
+    setSuccess(idInput);
+  }
   if (locName === "") {
     setError(locationInput, "Location is required");
   } else {
@@ -169,27 +168,48 @@ function outsideClick(event) {
     modalQueryClose();
   }
 }
-
 queryPointLink.addEventListener("click", () => {
   modalQP.style.display = "block";
 });
 
-// request api
-const api_url = "http://localhost:3001";
-const fetchData = () => {
-  fetch(`${api_url}/points`)
-    .then((res) => res.json())
-    .then((data) => console.log("data", data))
-    .catch((err) => console.log("err", err));
-};
-saveBtn.addEventListener("click", fetchData);
+// Query Point process
+// Populate Table and its elements
+//get table element
+const table = document.querySelector("#table_data");
+// Query Point function for loadIntoTable
+async function loadIntoTable(url, table) {
+  const tableHead = table.querySelector("thead");
+  const tableBody = table.querySelector("tbody");
+  const response = await fetch(url);
+  const { data } = await response.json();
 
+  tableBody.innerHTML = `<tr></tr>`;
+  // populate the rows
+  for (let i = 0; i < data.places.length; i++) {
+    const rowElement = document.createElement("tr");
+    tableBody.innerHTML += `
+                          <tr>
+                            <td scope="col">${data.places[i]["id"]}</td>
+                            <td scope="col">${data.places[i]["location"]}</td>
+                            <td scope="col">${data.places[i]["lat"]}</td>
+                            <td scope="col">${data.places[i]["long"]}</td>
+                        </tr>`;
+
+    tableBody.appendChild(rowElement);
+  }
+}
+
+loadIntoTable(api_url, document.querySelector("table"));
+
+// Search elements process
+// get search-input element
+const inputSearch = document.getElementById("search-text");
 function searchTable() {
   var filter, found, table, tr, td, i, j;
-  filter = input.value.toUpperCase();
+  filter = inputSearch.value.toUpperCase();
   table = document.getElementById("table_data");
   tr = table.getElementsByTagName("tr");
-  for (i = 0; i < tr.length; i++) {
+  for (i = 1; i < tr.length; i++) {
     td = tr[i].getElementsByTagName("td");
     for (j = 0; j < td.length; j++) {
       if (td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
@@ -204,4 +224,5 @@ function searchTable() {
     }
   }
 }
-input.addEventListener("keyup", searchTable);
+inputSearch.addEventListener("keyup", searchTable);
+saveBtn.addEventListener("click", saveData);

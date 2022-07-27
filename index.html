@@ -43,7 +43,12 @@
           <span class="btn btn-close" id="closeButton"></span>
         <h1 class="modal-title">Add Point</h1>
         </div>
-        <form class="form" id="form" action="/">
+        <form class="form" id="form">
+          <div class="form-group input-control">
+            <label for="id-text" class="col-form-label">ID:</label>
+            <input type="number" class="form-control" id="id-text" />
+            <div class="error"></div>
+          </div>
           <div class="form-group input-control">
             <label for="location-name" class="col-form-label"
               >Location Name:</label
@@ -61,7 +66,7 @@
             <input type="text" class="form-control" id="long-text" />
             <div class="error"></div>
           </div>
-          <button type="submit" class="btn btn-primary mt-3" id="saveButton">
+          <button type="submit" onclick={saveData} class="btn btn-primary mt-3" id="saveButton">
             Save and Leave
           </button>
         </form>
@@ -72,7 +77,14 @@
         <span class="btn btn-close" id="closeButtonQuery"></span>
         <h1 class="modal-title">Query Point</h1>
         <table class="table display" id="table_data">
-          <thead></thead>
+          <thead>
+            <tr>
+               <th scope="col">#</th>
+               <th scope="col">Name</th>
+               <th scope="col">Latitude</th>
+               <th scope="col">Longitude</th>
+               </tr>
+          </thead>
           <tbody></tbody>
         </table>
         <div class="search-result">The word doesn't match.</div>
