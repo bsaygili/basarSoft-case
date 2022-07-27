@@ -1,4 +1,4 @@
-var _Map, _Draw, _Source, _Layer;
+var _Map, _Draw, _Source, _Layer, _Feaures;
 
 InitializeMap = () => {
   _Source = new ol.source.Vector({ wrapX: false });
@@ -44,6 +44,9 @@ AddInteraction = () => {
 AddPoint = () => {
   _Draw.setActive(true);
 };
+
+let marker = new ol.Marker([3875337.272593909, 4673762.797695817]);
+marker.addTo(_Map);
 
 // api url
 const api_url = "http://localhost:3001/points";
@@ -94,6 +97,9 @@ async function postData(place) {
   await fetch(`${api_url}/${place.id}`, {
     method: "POST",
     body: payload,
+    headers: {
+      "Content-type": "application/json",
+    },
   })
     .then((res) => res.json())
     .then((data) => console.log("data", data))

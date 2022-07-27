@@ -8,8 +8,11 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyparser.urlencoded({ extended: false }));
+app.use(cors());
 
 app.post("/points/:id", (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Headers", "*");
   var content = req.body;
   var { id } = req.params;
   // if (typeof id !== "number" || id != null) {
