@@ -1,4 +1,4 @@
-# BaşarSoft Task Case
+# BaşarSoft Frontend Challenge
 
 ## How to open this project?
 
