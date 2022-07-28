@@ -15,12 +15,7 @@ app.post("/points/:id", (req, res) => {
   res.setHeader("Access-Control-Allow-Headers", "*");
   var content = req.body;
   var { id } = req.params;
-  // if (typeof id !== "number" || id != null) {
-  //   res.json({
-  //     success: false,
-  //     data: "id is not an object",
-  //   });
-  // }
+
   if (!content) {
     res.json({
       success: false,
