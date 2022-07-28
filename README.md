@@ -10,4 +10,4 @@
 - After that backend server will have work "http://localhost:3001"
 - Last of all, you are ready to open or start index.html
 - And also check my repo and latest project on https://github.com/bsaygili
--
+- have a good day
