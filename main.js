@@ -1,7 +1,9 @@
 var _Map, _Draw, _Source, _Layer, _Feaures;
 
 InitializeMap = () => {
-  _Source = new ol.source.Vector({ wrapX: false });
+  _Source = new ol.source.Vector({
+    wrapX: false,
+  });
 
   _Layer = new ol.layer.Vector({
     source: _Source,
@@ -20,6 +22,8 @@ InitializeMap = () => {
       zoom: 7,
     }),
   });
+  // this function calls all markers
+  fetchPointToUI();
 };
 
 AddInteraction = () => {
@@ -44,9 +48,42 @@ AddInteraction = () => {
 AddPoint = () => {
   _Draw.setActive(true);
 };
+// add all saved marker as a layer from api
+async function fetchPointToUI() {
+  const response = await fetch("http://localhost:3001/points");
+  const { data } = await response.json();
+  for (let i = 0; i < data.places.length; i++) {
+    var markerGeometry = new ol.geom.Point([
+      data.places[i].lat,
+      data.places[i].long,
+    ]);
+    var markerFeature = new ol.Feature({
+      geometry: markerGeometry,
+    });
 
-let marker = new ol.Marker([3875337.272593909, 4673762.797695817]);
-marker.addTo(_Map);
+    var markerStyle = new ol.style.Icon({
+      src: "https://openlayers.org/en/latest/examples/data/icon.png",
+    });
+
+    markerFeature.setStyle(
+      new ol.style.Style({
+        image: markerStyle,
+      })
+    );
+
+    var vectorSource = new ol.source.Vector({
+      features: [markerFeature],
+    });
+
+    var markerLayer = new ol.layer.Vector({
+      title: "RoutePoint",
+      visible: true,
+      source: vectorSource,
+    });
+
+    _Map.addLayer(markerLayer);
+  }
+}
 
 // api url
 const api_url = "http://localhost:3001/points";
@@ -69,32 +106,27 @@ var latitudeInput = document.getElementById("lat-text");
 var longitudeInput = document.getElementById("long-text");
 //get form element
 var form = document.getElementById("form");
-
-//listen for submit
-form.addEventListener("submit", (event) => {
-  validetInputs();
-  modalAP.style.display = "none";
-  // locationInput.value = "";
-  event.preventDefault();
-});
 //get save and leave button
 var saveBtn = document.querySelector("#saveButton");
 
-var place;
+// button save and post all data to api
 function saveData(event) {
+  event.preventDefault();
+  modalAP.style.display = "none";
   place = {
     id: Number(idInput.value),
     location: locationInput.value.trim(),
     lat: Number(latitudeInput.value),
     long: Number(longitudeInput.value),
   };
-  event.preventDefault();
+  validetInputs();
   postData(place);
 }
 
-async function postData(place) {
+// post data to api
+function postData(place) {
   const payload = JSON.stringify(place);
-  await fetch(`${api_url}/${place.id}`, {
+  fetch(`${api_url}/${place.id}`, {
     method: "POST",
     body: payload,
     headers: {
@@ -184,7 +216,6 @@ queryPointLink.addEventListener("click", () => {
 const table = document.querySelector("#table_data");
 // Query Point function for loadIntoTable
 async function loadIntoTable(url, table) {
-  const tableHead = table.querySelector("thead");
   const tableBody = table.querySelector("tbody");
   const response = await fetch(url);
   const { data } = await response.json();
