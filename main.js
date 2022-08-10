@@ -111,7 +111,7 @@ var saveBtn = document.querySelector("#saveButton");
 
 // button save and post all data to api
 function saveData(event) {
-  event.preventDefault();
+  // event.preventDefault();
   modalAP.style.display = "none";
   place = {
     id: Number(idInput.value),
