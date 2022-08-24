@@ -1,12 +1,1 @@
-{
-  "places": [
-    {
-      "id": 1,
-      "location": "BaşarSoft Bilgi Tek.",
-      "lat": 3652995.7716818564,
-      "long": 4850335.097319504
-    }
-  ],
-  "createdAt": "2022-07-27T12:13:21.697Z",
-  "lastModified": "2022-07-27T12:13:21.697Z"
-}
+{"places":[{"id":1,"location":"BaşarSoft Bilgi Tek.","lat":3652995.7716818564,"long":4850335.097319504},{"id":26001,"location":"Eskişehir","lat":3396535.7274155645,"long":4832140.3203027025}],"createdAt":"2022-07-27T12:13:21.697Z","lastModified":"2022-07-27T12:13:21.697Z"}
